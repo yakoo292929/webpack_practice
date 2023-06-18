@@ -15,10 +15,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  devServer: {
-    static: path.resolve(__dirname, 'src'),
+  entry: {
+    main: './src/javascripts/main.js',
   },
-  entry: './src/javascripts/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'javascripts/main.js',
@@ -26,7 +25,21 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(css|sass|scss)/,
+        test: /\.js/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                ['@babel/preset-env', { "targets": "> 0.25%, not dead" }],
+              ],
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(css|scss|sass)$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -40,18 +53,18 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpg)/,
+        test: /\.png|\.jpg/,
         type: 'asset/resource',
         generator: {
-          filename: 'images/[name][ext]'
+          filename: 'images/[name][ext]',
         },
         use: [
           // {
           //   loader: 'file-loader',
           //   options: {
           //     esModule: false,
-          //     name: 'images/[name].[ext]'
-          //   }
+          //     name: 'images/[name].[ext]',
+          //   },
           // },
         ],
       },
@@ -65,8 +78,8 @@ module.exports = {
             loader: 'pug-html-loader',
             options: {
               pretty: true,
-            }
-          }
+            },
+          },
         ],
       },
     ],
@@ -89,4 +102,4 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
   ],
-}
+};
