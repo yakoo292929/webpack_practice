@@ -15,6 +15,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
+  mode:'development',
+  devtool: 'source-map',
   entry: {
     main: './src/javascripts/main.js',
   },
@@ -24,6 +26,7 @@ module.exports = {
   },
   module: {
     rules: [
+      // Babelの設定
       {
         test: /\.js/,
         exclude: /node_modules/,
@@ -33,11 +36,13 @@ module.exports = {
             options: {
               presets: [
                 ['@babel/preset-env', { "targets": "> 0.25%, not dead" }],
+                '@babel/preset-react',
               ],
             },
           },
         ],
       },
+      // cssの設定
       {
         test: /\.(css|scss|sass)$/,
         use: [
@@ -46,28 +51,35 @@ module.exports = {
           },
           {
             loader: 'css-loader',
+            options: {
+              sourceMap: false,
+            }
           },
           {
             loader: 'sass-loader',
           },
         ],
       },
+      // 画像の設定
       {
-        test: /\.png|\.jpg/,
+        test: /\.(png|jpg|jpeg)/,
         type: 'asset/resource',
         generator: {
           filename: 'images/[name][ext]',
         },
         use: [
-          // {
-          //   loader: 'file-loader',
-          //   options: {
-          //     esModule: false,
-          //     name: 'images/[name].[ext]',
-          //   },
-          // },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+                quality: 65,
+              },
+            },
+          },
         ],
       },
+      // pugの設定
       {
         test: /\.pug/,
         use: [
