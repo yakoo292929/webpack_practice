@@ -13,6 +13,8 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader');
+
 
 module.exports = {
   mode:'development',
@@ -26,7 +28,27 @@ module.exports = {
   },
   module: {
     rules: [
-      // Babelの設定
+      // typeScriptの設定
+      {
+        test: /\.(ts|tsx)/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader',
+          },
+        ],
+      },
+      // vueの設定
+      {
+        test: /\.vue/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'vue-loader',
+          },
+        ],
+      },
+      // javascriptの設定
       {
         test: /\.js/,
         exclude: /node_modules/,
@@ -96,7 +118,9 @@ module.exports = {
       },
     ],
   },
+  // pluginの設定
   plugins: [
+    new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
       filename: './stylesheets/main.css',
     }),
